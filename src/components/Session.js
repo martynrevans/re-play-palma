@@ -100,7 +100,7 @@ export default class Session extends Component {
                             <Tab eventKey={2} title="Activities"><br/>
                                 <Row>
                                     {session.fields.Activities.map(activityId =>
-                                        <Col xs={6} key={ activityId } >
+                                        <Col xs={12} key={ activityId } >
                                             <Activity activityId={ activityId }></Activity><br/>
                                         </Col>
                                     )}
