@@ -66,7 +66,11 @@ class Persons extends Component {
     async fetchPersons() {
         try {
 	    	this.setState({isFetching: true})
-		    base('Person').select({view: 'Grid view'})
+		    base('Person').select({
+		    	view: 'Grid view',
+		    	filterByFormula: 'SEARCH("Coach", {Roles})'
+
+		    })
 		    .eachPage(
 		      (persons, fetchNextPage) => {
 		        this.setState({

@@ -50,7 +50,9 @@ class Sessions extends Component {
     async fetchSessionsAsync() {
         try {
 	    	this.setState({isFetching: true})
-		    base('Session').select({view: 'Grid view'})
+		    base('Session').select({
+                view: 'Grid view'
+            })
 		    .eachPage(
 		      (sessions, fetchNextPage) => {
 		        this.setState({

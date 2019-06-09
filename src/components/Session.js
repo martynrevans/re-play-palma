@@ -7,6 +7,9 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
+import { Tab, Tabs } from 'react-bootstrap';
+
+import Activity from './Activity';
 
 const airTableKey = process.env.REACT_APP_AIRTABLE_API_KEY;
 const airTableBase = process.env.REACT_APP_AIRTABLE_BASE;
@@ -20,8 +23,10 @@ export default class Session extends Component {
             isFetching: false,
             session: null,
             persons: [],
-            newPerson: ''
+            newPerson: '',
+            activeTab: props.activeTab || 1
         };
+        this.handleSelect = this.handleSelect.bind(this);
     }
 
     inputValue = '';
@@ -59,31 +64,52 @@ export default class Session extends Component {
                         </Card>
                     </Col>
                 </Row>
-            </Container>        }
+            </Container>
+        }
         if (session != null && persons.length > 0) {
             personInfo =
             <Container>
                 <Row>
-                    <Col><br/>
-                        <ListGroup>
-                            {persons.map(person => 
-                                <ListGroup.Item key={ person.id }>
-                                    <label><input 
-                                        type="checkbox" 
-                                        defaultChecked={
-                                            //calculate if person is already logged as attending
-                                            (session != null) && session.fields.Attended != null ?  session.fields.Attended.includes(person.id) : false
-                                        }
-                                        onChange={() => this.handleChange(person.id, this.checked)}
-                                    />&nbsp;
-                                    { person.fields.Name }</label>
-                                </ListGroup.Item> 
-                            )}
-                            <ListGroup.Item>
-                                <input value={this.state.newPerson} onChange={this.changeInputHandler} placeholder="New person..." />
-                                <Button variant="primary" size="sm" onClick={this.handleClick}>Add</Button>
-                            </ListGroup.Item>
-                        </ListGroup>
+                    <Col>
+                        <br/>
+                        <Tabs activeKey={this.state.activeTab} onSelect={this.handleSelect}>
+                            <Tab eventKey={1} title="Register">
+                                <br/>
+                                <ListGroup>
+                                    <ListGroup.Item>
+                                        <input value={this.state.newPerson} onChange={this.changeInputHandler} placeholder="New person..." />
+                                        <Button variant="primary" size="sm" onClick={this.handleClick}>Add</Button>
+                                    </ListGroup.Item>
+                                    {persons.map(person => 
+                                        <ListGroup.Item key={ person.id }>
+                                            <label><input 
+                                                type="checkbox" 
+                                                defaultChecked={
+                                                    //calculate if person is already logged as attending
+                                                    (session != null) && session.fields.Attended != null ?  session.fields.Attended.includes(person.id) : false
+                                                }
+                                                onChange={() => this.handleChange(person.id, this.checked)}
+                                            />&nbsp;
+                                            { person.fields.Name }</label>
+                                        </ListGroup.Item> 
+                                    )}
+                                    
+                                </ListGroup>
+
+                            </Tab>
+                            <Tab eventKey={2} title="Activities"><br/>
+                                <Row>
+                                    {session.fields.Activities.map(activityId =>
+                                        <Col xs={6} key={ activityId } >
+                                            <Activity activityId={ activityId }></Activity><br/>
+                                        </Col>
+                                    )}
+                                </Row>
+                            </Tab>
+                        </Tabs>
+
+                        <br/>
+
                     </Col>
                 </Row>
             </Container>
@@ -97,6 +123,14 @@ export default class Session extends Component {
         	</div>
     	);
   	}
+
+    handleSelect(selectedTab) {
+        // The active tab must be set into the state so that
+        // the Tabs component knows about the change and re-renders.
+        this.setState({
+            activeTab: selectedTab
+        });
+    }
 
   	async fetchSession(Id) {
 		var self = this;
