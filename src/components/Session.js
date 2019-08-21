@@ -16,7 +16,7 @@ const airTableBase = process.env.REACT_APP_AIRTABLE_BASE;
 const base = new Airtable({ apiKey: airTableKey }).base(airTableBase);
 
 export default class Session extends Component {
-	
+
     constructor(props) {
         super(props);
         this.state = {
@@ -38,7 +38,7 @@ export default class Session extends Component {
 
     async loadData() {
         await this.fetchSession(this.props.match.params.id)
-        await this.fetchPersons()        
+        await this.fetchPersons()
     }
 
   	render() {
@@ -80,10 +80,10 @@ export default class Session extends Component {
                                         <input value={this.state.newPerson} onChange={this.changeInputHandler} placeholder="New person..." />
                                         <Button variant="primary" size="sm" onClick={this.handleClick}>Add</Button>
                                     </ListGroup.Item>
-                                    {persons.map(person => 
+                                    {persons.map(person =>
                                         <ListGroup.Item key={ person.id }>
-                                            <label><input 
-                                                type="checkbox" 
+                                            <label><input
+                                                type="checkbox"
                                                 defaultChecked={
                                                     //calculate if person is already logged as attending
                                                     (session != null) && session.fields.Attended != null ?  session.fields.Attended.includes(person.id) : false
@@ -91,19 +91,19 @@ export default class Session extends Component {
                                                 onChange={() => this.handleChange(person.id, this.checked)}
                                             />&nbsp;
                                             { person.fields.Name }</label>
-                                        </ListGroup.Item> 
+                                        </ListGroup.Item>
                                     )}
-                                    
+
                                 </ListGroup>
 
                             </Tab>
                             <Tab eventKey={2} title="Activities"><br/>
                                 <Row>
-                                    {session.fields.Activities.map(activityId =>
+                                    {session.fields.Activities ? session.fields.Activities.map(activityId =>
                                         <Col xs={12} key={ activityId } >
                                             <Activity activityId={ activityId }></Activity><br/>
                                         </Col>
-                                    )}
+                                    ) : ''  }
                                 </Row>
                             </Tab>
                         </Tabs>
@@ -163,7 +163,7 @@ export default class Session extends Component {
         var array = []
         if (session.fields.Attended != null){
             array = session.fields.Attended
-        }       
+        }
         var index = array.indexOf(id)
         if (index >= 0) {
             //yep - needs removing
@@ -187,7 +187,7 @@ export default class Session extends Component {
         this.createPerson(this.inputValue)
         this.setState({ newPerson: '' })
         this.loadData()
-    }    
+    }
 
     createPerson(personName) {
         base('Person').create({
@@ -210,7 +210,7 @@ export default class Session extends Component {
 	      		return;
 	    	}
 	  	});
-	  	
+
 	}
 
-}	
+}
