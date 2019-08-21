@@ -99,11 +99,11 @@ export default class Session extends Component {
                             </Tab>
                             <Tab eventKey={2} title="Activities"><br/>
                                 <Row>
-                                    {session.fields.Activities.map(activityId =>
+                                    {session.fields.Activities ? session.fields.Activities.map(activityId =>
                                         <Col xs={12} key={ activityId } >
                                             <Activity activityId={ activityId }></Activity><br/>
                                         </Col>
-                                    )}
+                                    ) : ''  }
                                 </Row>
                             </Tab>
                         </Tabs>
